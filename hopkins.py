@@ -1,5 +1,6 @@
 import pandas as pd
 import matplotlib.pyplot as plt
+import numpy as np
 
 
 # Read in data
@@ -61,14 +62,55 @@ full_frame["Est_Discharge_Rate"].groupby("Date").mean().plot()
 
 # General estimate of discharges and mean discharge rate
 full_frame["Est_Discharge_Rate"].groupby("Date").mean().plot()
-full_frame[full_frame["Country/Region"] == "China"]["Est_Discharge_Rate"].groupby("Date").mean().plot()
-full_frame[full_frame["Country/Region"] != "China"]["Est_Discharge_Rate"].groupby("Date").mean().plot()
-full_frame[full_frame["Country/Region"] == "United Kingdom"]["Est_Discharge_Rate"].groupby("Date").mean().plot()
+full_frame[full_frame["Country/Region"] == "China"]["Est_Discharge_Rate"].groupby(
+    "Date"
+).mean().plot()
+full_frame[full_frame["Country/Region"] != "China"]["Est_Discharge_Rate"].groupby(
+    "Date"
+).mean().plot()
+full_frame[full_frame["Country/Region"] == "United Kingdom"][
+    "Est_Discharge_Rate"
+].groupby("Date").mean().plot()
 plt.show()
 
 
-# General estimate of discharges and mean discharge rate
+# General estimate of discharges and mean discharge rate China & global
 full_frame["Est_Discharge"].groupby("Date").mean().plot()
-full_frame[full_frame["Country/Region"] == "China"]["Est_Discharge"].groupby("Date").mean().plot()
-full_frame[full_frame["Country/Region"] != "China"]["Est_Discharge"].groupby("Date").sum().plot()
+full_frame[full_frame["Country/Region"] == "China"]["Est_Discharge"].groupby(
+    "Date"
+).mean().plot()
+full_frame[full_frame["Country/Region"] != "China"]["Est_Discharge"].groupby(
+    "Date"
+).sum().plot()
+plt.show()
+
+
+# Simple analysis of confirmed-recovery lag
+disch = full_frame["Recovered"].groupby("Date").sum().reset_index(drop=True)
+conf = full_frame["Confirmed"].groupby("Date").sum().reset_index(drop=True)
+lag_corr = pd.Series([disch.corr(conf.shift(lag)) for lag in range(0, len(conf) - 2)])
+lag_corr.plot()
+plt.show()
+
+
+# Simple analysis of est_discharge-recovery lag for China
+disch_ch = (
+    full_frame[full_frame["Country/Region"] == "China"]["Est_Discharge"]
+    .groupby("Date")
+    .sum()
+    .reset_index(drop=True)
+)
+conf_ch = (
+    full_frame[full_frame["Country/Region"] == "China"]["Confirmed"]
+    .groupby("Date")
+    .sum()
+    .reset_index(drop=True)
+)
+lag_corr_ch = pd.Series(
+    [disch_ch.corr(conf_ch.shift(lag)) for lag in range(0, len(conf_ch) - 2)]
+)
+disch_ch.plot()
+conf_ch.plot()
+plt.show()
+lag_corr_ch.plot()
 plt.show()
