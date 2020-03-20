@@ -56,4 +56,19 @@ full_frame = (
 full_frame["Est_Discharge"] = full_frame["Recovered"] + full_frame["Deaths"]
 full_frame["Est_Discharge_Rate"] = full_frame["Est_Discharge"] / full_frame["Confirmed"]
 full_frame["Est_Discharge_Rate"].groupby("Date").mean().plot()
+# plt.show()
+
+
+# General estimate of discharges and mean discharge rate
+full_frame["Est_Discharge_Rate"].groupby("Date").mean().plot()
+full_frame[full_frame["Country/Region"] == "China"]["Est_Discharge_Rate"].groupby("Date").mean().plot()
+full_frame[full_frame["Country/Region"] != "China"]["Est_Discharge_Rate"].groupby("Date").mean().plot()
+full_frame[full_frame["Country/Region"] == "United Kingdom"]["Est_Discharge_Rate"].groupby("Date").mean().plot()
+plt.show()
+
+
+# General estimate of discharges and mean discharge rate
+full_frame["Est_Discharge"].groupby("Date").mean().plot()
+full_frame[full_frame["Country/Region"] == "China"]["Est_Discharge"].groupby("Date").mean().plot()
+full_frame[full_frame["Country/Region"] != "China"]["Est_Discharge"].groupby("Date").sum().plot()
 plt.show()
